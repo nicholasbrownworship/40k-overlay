@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Crusade Archive — Control Panel</title>
+  <style>
+    :root{
+      --bg:#0b0d10; --panel:#10141a;
+      --ink:#e9dfc8; --dim:rgba(233,223,200,.72);
+      --brass:#b79a52; --edge:rgba(233,223,200,.14);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; padding:20px;
+      background: radial-gradient(900px 600px at 40% 20%, #14181d, var(--bg));
+      color:var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .wrap{max-width:980px; margin:0 auto; display:grid; gap:14px}
+    .card{
+      background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.28));
+      border:1px solid var(--edge);
+      border-radius: var(--radius);
+      padding:16px;
+    }
+    h1{margin:0 0 8px; letter-spacing:.08em; text-transform:uppercase; font-size:18px}
+    .grid{display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px}
+    label{display:block; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); margin-bottom:6px}
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(233,223,200,.12);
+      background: rgba(0,0,0,.25);
+      color: var(--ink);
+      outline:none;
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    button{
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(183,154,82,.35);
+      background: rgba(183,154,82,.12);
+      color: var(--ink);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size:12px;
+      cursor:pointer;
+    }
+    button.secondary{
+      border-color: rgba(233,223,200,.14);
+      background: rgba(0,0,0,.20);
+    }
+    .pill{
+      display:inline-block;
+      margin-top:10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: rgba(233,223,200,.78);
+      letter-spacing:.12em;
+    }
+    .small{font-size:12px; color:var(--dim); line-height:1.5}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Crusade Archive — Live Control</h1>
+      <div class="small">
+        Changes write instantly to <span class="pill">localStorage</span>. Keep this open on a second monitor.
+      </div>
+      <div class="small" style="margin-top:8px;">
+        Tip: Put the overlay and this panel in the same folder and open both the same way (both local files, or both from the same local server) so they share the same storage.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Session</label>
+          <input id="session" placeholder="012" />
+        </div>
+        <div>
+          <label>Turn</label>
+          <input id="turn" type="number" min="0" step="1" />
+        </div>
+
+        <div>
+          <label>Location</label>
+          <input id="location" placeholder="Bastior Prime" />
+        </div>
+        <div>
+          <label>Control %</label>
+          <select id="controlPct">
+            <option value="0">0%</option>
+            <option value="25">25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100">100%</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Control Owner</label>
+          <select id="controlOwner">
+            <option>Defenders</option>
+            <option>Attackers</option>
+            <option>Raiders</option>
+          </select>
+        </div>
+        <div>
+          <label>Archive Ref</label>
+          <input id="archiveRef" placeholder="CA-41-BAS" />
+        </div>
+
+        <div>
+          <label>Attackers</label>
+          <input id="attackers" placeholder="Raiders" />
+        </div>
+        <div>
+          <label>Defenders</label>
+          <input id="defenders" placeholder="Defenders" />
+        </div>
+
+        <div>
+          <label>Dossier Hash</label>
+          <input id="hash" placeholder="9F3C-2A17" />
+        </div>
+        <div>
+          <label>Quick Actions</label>
+          <div class="row" style="margin-top:0">
+            <button id="turnDown" class="secondary">Turn -</button>
+            <button id="turnUp">Turn +</button>
+            <button id="swapSides" class="secondary">Swap Sides</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="save">Apply</button>
+        <button id="reset" class="secondary">Reset Defaults</button>
+        <span class="pill" id="status">READY</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = "crusade_overlay_state_v1";
+
+    const els = {
+      session: document.getElementById("session"),
+      turn: document.getElementById("turn"),
+      location: document.getElementById("location"),
+      controlPct: document.getElementById("controlPct"),
+      controlOwner: document.getElementById("controlOwner"),
+      attackers: document.getElementById("attackers"),
+      defenders: document.getElementById("defenders"),
+      archiveRef: document.getElementById("archiveRef"),
+      hash: document.getElementById("hash"),
+      status: document.getElementById("status"),
+    };
+
+    const defaults = {
+      session: "012",
+      turn: 3,
+      location: "Bastior Prime",
+      control_pct: 75,
+      control_owner: "Defenders",
+      attackers: "Raiders",
+      defenders: "Defenders",
+      archive_ref: "CA-41-BAS",
+      hash: "9F3C-2A17"
+    };
+
+    function load() {
+      const raw = localStorage.getItem(KEY);
+      const s = raw ? JSON.parse(raw) : defaults;
+
+      els.session.value = s.session ?? defaults.session;
+      els.turn.value = s.turn ?? defaults.turn;
+      els.location.value = s.location ?? defaults.location;
+      els.controlPct.value = String(s.control_pct ?? defaults.control_pct);
+      els.controlOwner.value = s.control_owner ?? defaults.control_owner;
+      els.attackers.value = s.attackers ?? defaults.attackers;
+      els.defenders.value = s.defenders ?? defaults.defenders;
+      els.archiveRef.value = s.archive_ref ?? defaults.archive_ref;
+      els.hash.value = s.hash ?? defaults.hash;
+    }
+
+    function saveState() {
+      const s = {
+        session: els.session.value || defaults.session,
+        turn: Number(els.turn.value ?? defaults.turn),
+        location: els.location.value || defaults.location,
+        control_pct: Number(els.controlPct.value),
+        control_owner: els.controlOwner.value,
+        attackers: els.attackers.value || defaults.attackers,
+        defenders: els.defenders.value || defaults.defenders,
+        archive_ref: els.archiveRef.value || defaults.archive_ref,
+        hash: els.hash.value || defaults.hash
+      };
+      localStorage.setItem(KEY, JSON.stringify(s));
+      els.status.textContent = "APPLIED";
+      setTimeout(() => els.status.textContent = "READY", 900);
+    }
+
+    document.getElementById("save").addEventListener("click", saveState);
+
+    document.getElementById("reset").addEventListener("click", () => {
+      localStorage.setItem(KEY, JSON.stringify(defaults));
+      load();
+      els.status.textContent = "RESET";
+      setTimeout(() => els.status.textContent = "READY", 900);
+    });
+
+    document.getElementById("turnUp").addEventListener("click", () => {
+      els.turn.value = Number(els.turn.value || 0) + 1;
+      saveState();
+    });
+
+    document.getElementById("turnDown").addEventListener("click", () => {
+      els.turn.value = Math.max(0, Number(els.turn.value || 0) - 1);
+      saveState();
+    });
+
+    document.getElementById("swapSides").addEventListener("click", () => {
+      const a = els.attackers.value;
+      els.attackers.value = els.defenders.value;
+      els.defenders.value = a;
+      saveState();
+    });
+
+    // Auto-save on Enter
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") saveState();
+    });
+
+    // Init
+    if (!localStorage.getItem(KEY)) localStorage.setItem(KEY, JSON.stringify(defaults));
+    load();
+  </script>
+</body>
+</html>

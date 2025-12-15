@@ -7,49 +7,62 @@
   <link rel="stylesheet" href="overlay.css" />
 </head>
 <body>
-  <div class="dossier" role="group" aria-label="Crusade Archive Dossier Panel">
-    <div class="dossierHeader">
-      <div class="brand">
-        <span class="brandName">CRUSADE ARCHIVE</span>
+  <aside class="slate" role="group" aria-label="Crusade Archive Dossier Panel">
+    <header class="slateTop">
+      <div class="stamp">
+        <div class="stampTitle">CRUSADE ARCHIVE</div>
+        <div class="stampSub">CAMPAIGN DOSSIER • LIVE RECORD</div>
       </div>
 
-      <div class="meta">
-        <span class="pill">SESSION <b id="sessionNum">012</b></span>
-        <span class="pill">TURN <b id="turnNum">3</b></span>
+      <div class="tags">
+        <span class="tag">SESSION <b id="sessionNum">012</b></span>
+        <span class="tag">TURN <b id="turnNum">3</b></span>
       </div>
-    </div>
+    </header>
 
-    <div class="rule"></div>
+    <div class="hazard" aria-hidden="true"></div>
 
-    <div class="grid">
+    <div class="slateBody">
       <div class="row">
-        <span class="label">LOCATION</span>
-        <span class="value" id="location">BASTIOR PRIME</span>
+        <span class="k">LOCATION</span>
+        <span class="v" id="location">BASTIOR PRIME</span>
       </div>
 
       <div class="row">
-        <span class="label">CONTROL</span>
-        <span class="value">
-          <span class="controlPct" id="controlPct">75%</span>
-          <span class="controlOwner" id="controlOwner">DEFENDERS</span>
+        <span class="k">CONTROL</span>
+        <span class="v">
+          <span class="pct" id="controlPct">75%</span>
+          <span class="owner" id="controlOwner">DEFENDERS</span>
         </span>
       </div>
 
       <div class="row">
-        <span class="label">ATTACKERS</span>
-        <span class="value" id="attackers">RAIDERS</span>
+        <span class="k">ATTACKERS</span>
+        <span class="v" id="attackers">RAIDERS</span>
       </div>
 
       <div class="row">
-        <span class="label">DEFENDERS</span>
-        <span class="value" id="defenders">DEFENDERS</span>
+        <span class="k">DEFENDERS</span>
+        <span class="v" id="defenders">DEFENDERS</span>
       </div>
     </div>
 
-    <div class="footer">
-      <span class="tiny">ARCHIVE REF:</span>
-      <span class="tinyVal" id="archiveRef">CA-41-BAS</span>
-    </div>
-  </div>
+    <footer class="slateFoot">
+      <div class="footLine">
+        <span class="micro">ARCHIVE REF</span>
+        <span class="mono" id="archiveRef">CA-41-BAS</span>
+      </div>
+      <div class="footLine">
+        <span class="micro">DOSSIER HASH</span>
+        <span class="mono" id="hash">9F3C-2A17</span>
+      </div>
+    </footer>
+
+    <!-- corner “rivets” -->
+    <i class="rivet tl" aria-hidden="true"></i>
+    <i class="rivet tr" aria-hidden="true"></i>
+    <i class="rivet bl" aria-hidden="true"></i>
+    <i class="rivet br" aria-hidden="true"></i>
+  </aside>
 </body>
 </html>

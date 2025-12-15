@@ -1,0 +1,146 @@
+:root{
+  --ink:#e9dfc8;                 /* bone */
+  --ink-dim: rgba(233,223,200,.72);
+  --ink-faint: rgba(233,223,200,.45);
+  --brass:#b79a52;
+  --rule: rgba(183,154,82,.55);
+  --panel: rgba(0,0,0,.34);
+  --panel2: rgba(0,0,0,.18);
+  --edge: rgba(233,223,200,.10);
+  --shadow: rgba(0,0,0,.65);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; margin:0; background: transparent; }
+body{ overflow:hidden; }
+
+.dossier{
+  position: fixed;
+  left: 48px;
+  bottom: 48px;
+
+  width: 620px;           /* Readable default */
+  padding: 18px 18px 14px;
+
+  color: var(--ink);
+  border: 1px solid var(--edge);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, var(--panel), var(--panel2)),
+    radial-gradient(700px 260px at 40% 20%, rgba(233,223,200,.04), transparent 70%);
+  box-shadow: 0 22px 48px var(--shadow);
+  backdrop-filter: blur(2px);
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Header */
+.dossierHeader{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandName{
+  font-family: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 18px;
+  opacity: .96;
+}
+
+.meta{ display:flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+.pill{
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--ink-dim);
+  border: 1px solid rgba(233,223,200,.10);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.20);
+}
+
+.pill b{ color: var(--ink); letter-spacing: .10em; }
+
+/* Rule */
+.rule{
+  height: 2px;
+  width: 100%;
+  margin: 14px 0 12px;
+  background: linear-gradient(90deg, transparent, var(--rule), transparent);
+  border-radius: 999px;
+}
+
+/* Grid rows */
+.grid{
+  display:grid;
+  gap: 10px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns: 120px 1fr;
+  align-items: baseline;
+  column-gap: 12px;
+}
+
+.label{
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  letter-spacing: .20em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.value{
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+/* Control styling */
+.controlPct{
+  color: var(--ink);
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+.controlOwner{
+  color: rgba(233,223,200,.85);
+  border: 1px solid rgba(183,154,82,.35);
+  background: rgba(183,154,82,.10);
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: .12em;
+  font-size: 12px;
+}
+
+/* Footer */
+.footer{
+  margin-top: 12px;
+  display:flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: flex-end;
+  color: var(--ink-faint);
+}
+
+.tiny{
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.tinyVal{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  color: rgba(233,223,200,.78);
+  letter-spacing: .12em;
+}
